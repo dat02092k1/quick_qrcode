@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Check-in App</title>
+</head>
+
+<body>
+    <h1>Scan QR Code to Check-in</h1>
+    <div id="qr-code"></div>
+  
+    <script>
+      const qrCodeContainer = document.getElementById('qr-code');
+  
+      // Fetch the check-in ID from the server
+      fetch('/generateQR')
+        .then(response => {
+            console.log(response);
+            response.text();
+        })
+        .then(checkinId => {
+          // Fetch the QR code image using the check-in ID
+          fetch(`/qrCodeImage/${checkinId}`)
+            .then(response => response.text())
+            .then(qrCodeHTML => {
+              qrCodeContainer.innerHTML = qrCodeHTML;
+            })
+            .catch(error => {
+              console.error('Error fetching QR code:', error);
+              qrCodeContainer.textContent = 'Error generating QR code';
+            });
+        })
+        .catch(error => {
+          console.error('Error fetching check-in ID:', error);
+          qrCodeContainer.textContent = 'Error generating QR code';
+        });
+    </script>
+  </body>
+</html> 
